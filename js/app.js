@@ -1,7 +1,19 @@
+// Global varibles
+const deck = document.querySelector('.deck');
+const icons = document.querySelectorAll('.card i');
+
+let moves = 0;
+let clicked = 0;
+
 /*
  * Create a list that holds all of your cards
  */
+cardsArr = [];
 
+// Grab icon names and push to array
+icons.forEach(function(elm) {
+  cardsArr.push(elm.className);
+});
 
 /*
  * Display the cards on the page
@@ -9,22 +21,33 @@
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
+function setBoard(Arr) {
+  let newArr = shuffle(Arr);
+  let newCard = '';
+  let count = 1;
+  cardsArr.forEach(function(elm) {
+    newCard += `<li id="card${count}" class="card"><i class="${elm}"></i></li>`;
+    count++;
+  });
+  deck.innerHTML = newCard;
+}
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
+  var currentIndex = array.length,
+    temporaryValue,
+    randomIndex;
 
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
 
-    return array;
+  return array;
 }
-
 
 /*
  * set up the event listener for a card. If a card is clicked:
@@ -36,3 +59,27 @@ function shuffle(array) {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
+
+deck.addEventListener('click', function(evt) {
+  if (evt.target.nodeName !== 'LI') {
+    return;
+  }
+  const clickedCard = evt.target;
+  display(clickedCard);
+  //   compare(clickedCard);
+});
+
+// Display function
+function display(card) {
+  card.classList.add('open', 'show', 'turn');
+}
+
+// ------------------------------------------------------------------------------------------------------
+
+//  App function
+function main() {
+  setBoard(cardsArr);
+}
+
+// App start
+main();
