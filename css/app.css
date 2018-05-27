@@ -83,6 +83,12 @@ h1 {
   font-size: 40px;
 }
 
+.deck .card.noMatch {
+  cursor: default;
+  background: #e02e46;
+  font-size: 40px;
+}
+
 .turn {
   transition: 0.25s;
 }

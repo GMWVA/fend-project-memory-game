@@ -1,19 +1,34 @@
 // Global varibles
 const deck = document.querySelector('.deck');
 const icons = document.querySelectorAll('.card i');
+const moveCount = document.querySelector('span.moves');
+const resetButton = document.querySelector('.restart');
 
+// Local varibles
+let cardsArr = [];
+let compareArr = [];
 let moves = 0;
-let clicked = 0;
 
 /*
  * Create a list that holds all of your cards
  */
-cardsArr = [];
 
-// Grab icon names and push to array
-icons.forEach(function(elm) {
-  cardsArr.push(elm.className);
-});
+// Grab icon names and push to array function
+function loadCards(Arr) {
+  icons.forEach(function(elm) {
+    Arr.push(elm.className);
+  });
+}
+
+// Reset listener function
+function resetEvent() {
+  resetButton.addEventListener('click', reset);
+}
+
+//  Reset function
+function reset() {
+  window.location.reload();
+}
 
 /*
  * Display the cards on the page
@@ -21,6 +36,8 @@ icons.forEach(function(elm) {
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
+
+//  Setup function
 function setBoard(Arr) {
   let newArr = shuffle(Arr);
   let newCard = '';
@@ -60,24 +77,77 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
-deck.addEventListener('click', function(evt) {
-  if (evt.target.nodeName !== 'LI') {
-    return;
-  }
-  const clickedCard = evt.target;
-  display(clickedCard);
-  //   compare(clickedCard);
-});
+// Card selection listener function
+function deckEvent() {
+  deck.addEventListener('click', function(evt) {
+    if (evt.target.nodeName !== 'LI') {
+      return;
+    }
+    const clickedCard = evt.target;
+    // display
+    display(clickedCard);
+    // compare
+    compare(clickedCard);
+  });
+}
 
 // Display function
 function display(card) {
   card.classList.add('open', 'show', 'turn');
 }
 
+// Compare function
+function compare(card) {
+  if (compareArr.length === 0) {
+    compareArr.push(card);
+    return;
+  } else {
+    compareArr.push(card);
+    if (compareArr[0].innerHTML === compareArr[1].innerHTML) {
+      match(compareArr);
+    } else {
+      noMatch(compareArr);
+    }
+  }
+}
+
+// match function
+function match(cards) {
+  cards.forEach(function(elm) {
+    elm.classList.add('match');
+  });
+  compareArr = [];
+  moves++;
+  increaseMoves();
+}
+
+// No match function
+function noMatch(cards) {
+  cards.forEach(function(elm) {
+    elm.classList.add('noMatch');
+    setTimeout(function() {
+      cards.forEach(function(elm) {
+        elm.classList.remove('open', 'show', 'turn', 'noMatch');
+      });
+    }, 1000);
+  });
+  compareArr = [];
+  moves++;
+  increaseMoves();
+}
+
+// Move counter
+function increaseMoves() {
+  moveCount.textContent = `${moves}`;
+}
+
 // ------------------------------------------------------------------------------------------------------
 
 //  App function
 function main() {
+  resetEvent();
+  loadCards(cardsArr);
+  deckEvent();
   setBoard(cardsArr);
 }
 
