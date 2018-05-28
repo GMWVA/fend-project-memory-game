@@ -115,7 +115,58 @@ h1 {
   display: inline-block;
 }
 
+.score-panel .timer {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  margin: 0 0 0 50px;
+}
+
 .score-panel .restart {
   float: right;
   cursor: pointer;
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  font-size: 24px;
+  text-align: center;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #000;
+  border-radius: 10px;
+  width: 80%;
+}
+
+.btn {
+  border: 1px solid #000;
+  border-radius: 8px;
+  background-color: dodgerblue;
+  padding: 14px 28px;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+/* On mouse-over */
+.btn:hover {
+  background: #eee;
+}
+
+.stars li {
+  list-style: none;
+  display: inline-block;
 }

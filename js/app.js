@@ -3,11 +3,24 @@ const deck = document.querySelector('.deck');
 const icons = document.querySelectorAll('.card i');
 const moveCount = document.querySelector('span.moves');
 const resetButton = document.querySelector('.restart');
+const stars = document.querySelector('.stars');
+const star = '<li><i class="fa fa-star"></i></li>';
+const timer = document.querySelector('.timer');
+const winModal = document.querySelector('#winModal');
+const button = document.querySelector('.btn');
+const winMessage = document.querySelector('.modal-content p');
 
 // Local varibles
 let cardsArr = [];
 let compareArr = [];
+let matched = 0;
 let moves = 0;
+let mins = 0;
+let secs = 0;
+let click = 0;
+let time = timer.innerHTML;
+let clockId;
+let starCount = 0;
 
 /*
  * Create a list that holds all of your cards
@@ -80,6 +93,7 @@ function shuffle(array) {
 // Card selection listener function
 function deckEvent() {
   deck.addEventListener('click', function(evt) {
+    click++;
     if (evt.target.nodeName !== 'LI') {
       return;
     }
@@ -88,6 +102,8 @@ function deckEvent() {
     display(clickedCard);
     // compare
     compare(clickedCard);
+    // timer
+    timerStart();
   });
 }
 
@@ -103,7 +119,10 @@ function compare(card) {
     return;
   } else {
     compareArr.push(card);
-    if (compareArr[0].innerHTML === compareArr[1].innerHTML) {
+    if (
+      compareArr[0].innerHTML === card.innerHTML &&
+      compareArr[0].id !== card.id
+    ) {
       match(compareArr);
     } else {
       noMatch(compareArr);
@@ -111,14 +130,16 @@ function compare(card) {
   }
 }
 
-// match function
+// Match function
 function match(cards) {
+  matched++;
   cards.forEach(function(elm) {
     elm.classList.add('match');
   });
   compareArr = [];
-  moves++;
   increaseMoves();
+  starCheck();
+  win();
 }
 
 // No match function
@@ -132,13 +153,73 @@ function noMatch(cards) {
     }, 1000);
   });
   compareArr = [];
-  moves++;
   increaseMoves();
+  starCheck();
 }
 
-// Move counter
+// Move counter function
 function increaseMoves() {
+  moves++;
   moveCount.textContent = `${moves}`;
+}
+
+// Stars function
+function starCheck() {
+  if (moves <= 8) {
+    stars.innerHTML = `${star}${star}${star}`;
+    starCount = 3;
+  } else if (moves >= 9 && moves <= 16) {
+    stars.innerHTML = `${star}${star}`;
+    starCount = 2;
+  } else {
+    stars.innerHTML = `${star}`;
+    starCount = 1;
+  }
+}
+
+// Timer function
+function timerStart() {
+  if (click === 1) {
+    const clock = setInterval(function() {
+      secs++;
+      if (secs === 60) {
+        mins++;
+        secs = 0;
+      }
+      timer.innerHTML = `${mins} mins ${secs} secs`;
+    }, 1000);
+    clockId = clock;
+  }
+}
+
+// Reset timer function
+function timerReset() {
+  timer.innerHTML = `${mins} mins ${secs} secs`;
+}
+
+// Stop timer function
+function timerStop() {
+  clearInterval(clockId);
+}
+
+// Modal function
+function showModal(modal) {
+  modal.style.display = 'block';
+  winMessage.innerHTML = `<strong>You Win!</strong>
+  <p>You Beat The Game In Only ${moves} Moves.</p>
+  <p>With A Time Of ${mins} Minutes and ${secs} seconds</p>
+  <p>You Got ${starCount} Stars!`;
+}
+
+// Play again listener function
+button.addEventListener('click', reset);
+
+// Win function
+function win() {
+  if (matched === 8) {
+    timerStop();
+    showModal(winModal);
+  }
 }
 
 // ------------------------------------------------------------------------------------------------------
@@ -146,8 +227,9 @@ function increaseMoves() {
 //  App function
 function main() {
   resetEvent();
-  loadCards(cardsArr);
   deckEvent();
+  timerReset();
+  loadCards(cardsArr);
   setBoard(cardsArr);
 }
 
