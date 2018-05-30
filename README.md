@@ -8,5 +8,6 @@ To Play the game, simply click on 1 of the 16 cards to reveal a symbol. Click on
 
 ## Built With
 
+* [Bootstrap](https://getbootstrap.com/) - The library used
 * [Font Awesome](https://fontawesome.com/get-started) - The symbols used
 * [Google Fonts](https://fonts.google.com/) - The font used
